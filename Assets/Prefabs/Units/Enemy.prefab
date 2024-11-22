@@ -10,7 +10,6 @@ GameObject:
   m_Component:
   - component: {fileID: 613939629838081680}
   - component: {fileID: 7420091633216074176}
-  - component: {fileID: 5738431858357955109}
   m_Layer: 0
   m_Name: Visual
   m_TagString: Untagged
@@ -85,27 +84,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!95 &5738431858357955109
-Animator:
-  serializedVersion: 5
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2764590612645153538}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 4ae5936bdaa1bd344b1adcbda2e72d2b, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_StabilizeFeet: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorStateOnDisable: 0
-  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &4104946946401702534
 GameObject:
   m_ObjectHideFlags: 0
@@ -118,7 +96,7 @@ GameObject:
   m_Layer: 0
   m_Name: RaycastPoint
   m_TagString: Untagged
-  m_Icon: {fileID: 0}
+  m_Icon: {fileID: 2974397684917235467, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
@@ -153,7 +131,7 @@ GameObject:
   - component: {fileID: 423326924144085224}
   m_Layer: 0
   m_Name: Enemy
-  m_TagString: Untagged
+  m_TagString: Interactable
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -232,13 +210,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ad353f3c62664034fbba446e423543f0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_patrolSpeed: 0
+  m_patrolSpeed: 3
   m_patrolPoints:
   - {fileID: 0}
   - {fileID: 0}
   m_waitingTime: 1
-  m_checkSpeed: 0
-  _followSpeed: 0
+  m_checkSpeed: 3
+  m_followSpeed: 5
 --- !u!114 &3372762560239282497
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -251,13 +229,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 09c9d0a901373f74ca6ed7d7d0af8f0a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _coneAngle: 58
-  _numRaycasts: 6
-  _raycastDistance: 7.87
-  _raycastStartPoint: {fileID: 3873556370978107985}
-  _layerMasks:
+  m_coneAngle: 60
+  m_numRaycasts: 10
+  m_raycastDistance: 10
+  m_raycastStartPoint: {fileID: 3873556370978107985}
+  m_layerMasks:
     serializedVersion: 2
-    m_Bits: 384
+    m_Bits: 896
 --- !u!195 &2574192152433817634
 NavMeshAgent:
   m_ObjectHideFlags: 0

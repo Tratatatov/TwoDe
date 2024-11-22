@@ -2,13 +2,12 @@
 using UnityEngine.AI;
 
 
-public class EnemyFollowState : EnemyBaseState
+public class EnemyFollowState : EnemyMoveState
 {
-    private RaycastHit2D m_hit;
     private Transform m_target;
-    public EnemyFollowState(StateSwitcher switcher, NavMeshAgent agent, Transform target, RaycastHit2D hit) : base(switcher, agent)
+
+    public EnemyFollowState(StateSwitcher switcher, NavMeshAgent agent, float speed, RaycastHit2D[] hits, Transform target) : base(switcher, agent, speed, hits)
     {
-        m_hit = hit;
         m_target = target;
     }
 

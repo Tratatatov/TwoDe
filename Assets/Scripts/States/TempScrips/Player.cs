@@ -10,7 +10,7 @@ public enum MovingState
 
 [RequireComponent(typeof(Rigidbody2D))]
 
-public class Player : MonoBehaviour
+public class Player : MonoBehaviour, IDamageble
 {
     [Header("Movement")]
     [SerializeField] private FloatingJoystick m_joystick;
@@ -127,12 +127,22 @@ public class Player : MonoBehaviour
             m_CurrentState = MovingState.Walk;
         }
     }
-
     private void DeathActions()
     {
         m_Animator.SetBool(Death, true);
     }
 
+    public void GetDamage()
+    {
+        m_CurrentState = MovingState.Death;
 
-
+    }
+    private void OnEnable()
+    {
+        EventBus.Instance.GameOverEvent.AddListener(GetDamage);     
+    }
+    private void OnDisable()
+    {
+        EventBus.Instance.GameOverEvent.RemoveListener(GetDamage);     
+    }
 }

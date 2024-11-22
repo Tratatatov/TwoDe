@@ -3,7 +3,7 @@ public abstract class State
 {
     private StateSwitcher m_switcher;
 
-    public StateSwitcher Switcher => m_switcher;
+    public StateSwitcher StateSwitcher => m_switcher;
 
     public State(StateSwitcher switcher)
     {

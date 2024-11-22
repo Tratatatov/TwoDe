@@ -6,8 +6,8 @@ public class EnemyPatrolState : EnemyMoveState
 {
     private List<Transform> m_patrolPoints = new();
     private int m_destinationIndex = 0;
-
-    public EnemyPatrolState(StateSwitcher switcher, NavMeshAgent agent, float speed, List<Transform> patrolPoints) : base(switcher, agent, speed)
+    public EnemyPatrolState(StateSwitcher switcher, NavMeshAgent agent, float speed, List<Transform> patrolPoints, RaycastHit2D[] hits)
+        : base(switcher, agent, speed, hits)
     {
         m_patrolPoints = patrolPoints;
     }
@@ -34,8 +34,10 @@ public class EnemyPatrolState : EnemyMoveState
         if (Vector2.Distance(Agent.transform.position, m_patrolPoints[m_destinationIndex].position) <= MinChangePointDistance)
         {
             ChangeDestination();
-            Switcher.SwitchState<EnemyWaitingState>();
+            StateSwitcher.SwitchState<EnemyWaitingState>();
         }
+       
+
     }
 
     private Transform GetRandomPoint() => m_patrolPoints[Random.Range(0, m_patrolPoints.Count)];

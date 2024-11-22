@@ -1,24 +1,22 @@
 using System.Collections;
-using System.Runtime.CompilerServices;
 using UnityEngine;
 using UnityEngine.AI;
 
 public class EnemyWaitingState : EnemyMoveState
 {
-    private RaycastHit2D m_hit;
     private float m_time;
-    private MonoBehaviour m_gameObject; // для корутин
+    private MonoBehaviour m_monoBehaviour; // для корутин
 
-    public EnemyWaitingState(StateSwitcher switcher, NavMeshAgent agent, float speed, MonoBehaviour gameObject, float time, RaycastHit2D hit) : base(switcher, agent, speed)
+    public EnemyWaitingState(StateSwitcher switcher, NavMeshAgent agent, float speed, RaycastHit2D[] hits,float time,MonoBehaviour monoBehaviour) : base(switcher, agent, speed, hits)
     {
         m_time = time;
-        m_gameObject = gameObject;
-        m_hit = hit;
+        m_monoBehaviour = monoBehaviour;
     }
 
+    
     public override void Enter()
     {
-        m_gameObject.StartCoroutine(DontMove());
+        m_monoBehaviour.StartCoroutine(DontMove());
     }
 
     public override void Exit()
@@ -38,13 +36,20 @@ public class EnemyWaitingState : EnemyMoveState
 
     private void Vision()
     {
-        //if(m_hit.collider.)
+        foreach (var hit in Hits)
+        {
+            if (hit.collider != null && hit.collider.CompareTag(Tags.Player))
+            {
+                StateSwitcher.SwitchState<EnemyFollowState>();
+            }
+            
+        }
     }
 
     private IEnumerator DontMove()
     {
         yield return new WaitForSeconds(m_time);
-        Switcher.SwitchState<EnemyPatrolState>();
+        StateSwitcher.SwitchState<EnemyPatrolState>();
     }
 
 

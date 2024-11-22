@@ -8,23 +8,26 @@ public class Vision : MonoBehaviour
     [SerializeField] private Transform m_raycastStartPoint;
     [SerializeField] private LayerMask m_layerMasks;
     private LineRenderer m_lineRenderer;
-    private RaycastHit2D m_raycastHit;
-    public RaycastHit2D RaycastHit2D => m_raycastHit;
-    
+    private RaycastHit2D[] m_raycastHits;
+    private Enemy m_enemy;
+    public RaycastHit2D[] RaycastHits => m_raycastHits;
+
     private void Look()
     {
         Vector3[] conePoints = new Vector3[m_numRaycasts + 2];
         conePoints[0] = m_raycastStartPoint.position;
 
+        m_raycastHits = new RaycastHit2D[m_numRaycasts];
+
         for (int i = 0; i < m_numRaycasts; i++)
         {
             float angle = m_coneAngle / 2 - (m_coneAngle / (m_numRaycasts - 1)) * i;
             Vector3 direction = Quaternion.Euler(0, 0, angle) * transform.right;
-            m_raycastHit = Physics2D.Raycast(m_raycastStartPoint.position, direction, m_raycastDistance, m_layerMasks);
+            m_raycastHits[i] = Physics2D.Raycast(m_raycastStartPoint.position, direction, m_raycastDistance, m_layerMasks);
 
-            if (m_raycastHit.collider != null)
+            if (m_raycastHits[i].collider != null)
             {
-                conePoints[i + 1] = m_raycastHit.point;
+                conePoints[i + 1] = m_raycastHits[i].point;
             }
             else
             {
@@ -36,8 +39,8 @@ public class Vision : MonoBehaviour
 
         m_lineRenderer.positionCount = m_numRaycasts + 2;
         m_lineRenderer.SetPositions(conePoints);
-
     }
+
 
 
     private void SetVisionConus()
@@ -51,12 +54,15 @@ public class Vision : MonoBehaviour
     }
     private void Start()
     {
+        m_enemy = GetComponent<Enemy>();
         SetVisionConus();
     }
 
     private void Update()
     {
         Look();
+        Debugger();
+
     }
 
     private void OnDrawGizmos()
@@ -75,4 +81,17 @@ public class Vision : MonoBehaviour
 
     }
 
+    private void Debugger()
+    {
+        Debug.Log(RaycastHits.Length);
+        foreach (var hit in RaycastHits)
+        {
+            if (hit.collider != null && hit.collider.CompareTag(Tags.Player))
+            {
+                m_enemy.StateSwitcher.SwitchState<EnemyFollowState>();
+                Debug.Log(hit.collider.name);
+            }
+        }
+    }
 }
+    

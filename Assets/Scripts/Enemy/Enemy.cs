@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+п»їusing System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -6,51 +6,51 @@ public class Enemy : MonoBehaviour
 {
     private const float WaitingSpeed = 0;
 
-    [Header("Патрулирование")]
+    [Header("РџР°С‚СЂСѓР»РёСЂРѕРІР°РЅРёРµ")]
     [Space(5)]
-    [Tooltip("Скорость перемещения во время патрулирования")]
+    [Tooltip("РЎРєРѕСЂРѕСЃС‚СЊ РїРµСЂРµРјРµС‰РµРЅРёСЏ РІРѕ РІСЂРµРјСЏ РїР°С‚СЂСѓР»РёСЂРѕРІР°РЅРёСЏ")]
     [SerializeField] private float m_patrolSpeed;
     [SerializeField] private List<Transform> m_patrolPoints;
 
-    [Header("Ожидание")]
+    [Header("РћР¶РёРґР°РЅРёРµ")]
     [Space(5)]
-    [Tooltip("Время ожидания, когда юнит осматривается")]
+    [Tooltip("Р’СЂРµРјСЏ РѕР¶РёРґР°РЅРёСЏ, РєРѕРіРґР° СЋРЅРёС‚ РѕСЃРјР°С‚СЂРёРІР°РµС‚СЃСЏ")]
     [SerializeField] private float m_waitingTime;
 
-    [Header("Проверка")]
+    [Header("РџСЂРѕРІРµСЂРєР°")]
     [Space(5)]
-    [Tooltip("Скорость перемещения во время проверки точки")]
+    [Tooltip("РЎРєРѕСЂРѕСЃС‚СЊ РїРµСЂРµРјРµС‰РµРЅРёСЏ РІРѕ РІСЂРµРјСЏ РїСЂРѕРІРµСЂРєРё С‚РѕС‡РєРё")]
     [SerializeField] private float m_checkSpeed;
     private Vector2 _pointToCheck;
 
-    [Header("Преследование")]
+    [Header("РџСЂРµСЃР»РµРґРѕРІР°РЅРёРµ")]
     [Space(5)]
     private Transform m_followTarget;
-    [SerializeField] private float _followSpeed;
+    [SerializeField] private float m_followSpeed;
 
-    private RaycastHit2D m_RaycastHit;
+    private RaycastHit2D[] m_hits;
     private NavMeshAgent m_agent;
     private StateSwitcher m_stateSwitcher;
-
     public StateSwitcher StateSwitcher => m_stateSwitcher;
-    public RaycastHit2D RaycastHit2D => m_RaycastHit;
-    //public Transform FollowTarget => _followTarget;
+    public RaycastHit2D[] Hits => m_hits;
+    public Transform FollowTarget => m_followTarget;
 
 
     public void Construct()
     {
-        m_RaycastHit = GetComponent<Vision>().RaycastHit2D;
+        m_hits = GetComponent<Vision>().RaycastHits;
         m_stateSwitcher = new StateSwitcher();
-        m_stateSwitcher.States.Add(new EnemyPatrolState(m_stateSwitcher, m_agent, m_patrolSpeed, m_patrolPoints));
-        m_stateSwitcher.States.Add(new EnemyWaitingState(m_stateSwitcher, m_agent, WaitingSpeed, this, m_waitingTime));
-        m_stateSwitcher.States.Add(new EnemyFollowState(m_stateSwitcher, m_agent, m_followTarget));
-        m_stateSwitcher.States.Add(new EnemyCheckPositionState(m_stateSwitcher, m_agent, m_checkSpeed));
+        m_stateSwitcher.States.Add(new EnemyPatrolState(m_stateSwitcher, m_agent, m_patrolSpeed, m_patrolPoints, Hits));
+        m_stateSwitcher.States.Add(new EnemyWaitingState(m_stateSwitcher, m_agent, WaitingSpeed, Hits, m_waitingTime, this));
+        m_stateSwitcher.States.Add(new EnemyFollowState(m_stateSwitcher, m_agent, m_followSpeed, Hits, FollowTarget));
+        m_stateSwitcher.States.Add(new EnemyCheckPositionState(m_stateSwitcher, m_agent, m_checkSpeed, Hits));
     }
 
 
 
     private void Start()
     {
+        m_followTarget = ServiceLocator.Instance.Player.transform;
         m_agent = GetComponent<NavMeshAgent>();
         Construct();
         m_stateSwitcher.SwitchState<EnemyPatrolState>();
@@ -59,7 +59,19 @@ public class Enemy : MonoBehaviour
     private void Update()
     {
         m_stateSwitcher.CurrentState.Update();
+        Debug.Log(m_stateSwitcher.CurrentState);
     }
-
-
+    private void FixedUpdate()
+    {
+        m_stateSwitcher.CurrentState.FixedUpdate();
+    }
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.CompareTag(Tags.Player))
+        {
+            EventBus.Instance.GameOver();
+        }
+    }
 }
+
+
